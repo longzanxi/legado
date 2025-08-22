@@ -283,6 +283,173 @@
         .toast.error {
             background-color: #f44336;
         }
+        
+        /* 阅读界面样式 */
+        .reading-interface {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #ffffff;
+        }
+        
+        .reading-interface.night-mode {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+        
+        .reading-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .reading-interface.night-mode .reading-header {
+            background-color: #2a2a2a;
+            border-bottom-color: #444;
+        }
+        
+        .reading-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .reading-content {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 120px);
+        }
+        
+        .reading-sidebar {
+            width: 250px;
+            background-color: #f9f9f9;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        
+        .reading-interface.night-mode .reading-sidebar {
+            background-color: #2a2a2a;
+            border-right-color: #444;
+        }
+        
+        .chapter-list {
+            max-height: calc(100vh - 180px);
+            overflow-y: auto;
+        }
+        
+        .chapter-item {
+            padding: 0.5rem;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-bottom: 0.25rem;
+            transition: background-color 0.2s;
+        }
+        
+        .chapter-item:hover {
+            background-color: #e3f2fd;
+        }
+        
+        .reading-interface.night-mode .chapter-item:hover {
+            background-color: #333;
+        }
+        
+        .chapter-item.active {
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        .reading-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .reading-area {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .chapter-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #1976d2;
+        }
+        
+        .reading-interface.night-mode .chapter-title {
+            color: #64b5f6;
+        }
+        
+        .chapter-content {
+            text-align: justify;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .chapter-content p {
+            margin-bottom: 1rem;
+            text-indent: 2em;
+        }
+        
+        .reading-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #f5f5f5;
+            border-top: 1px solid #ddd;
+        }
+        
+        .reading-interface.night-mode .reading-controls {
+            background-color: #2a2a2a;
+            border-top-color: #444;
+        }
+        
+        .reading-progress {
+            font-weight: bold;
+        }
+        
+        .reading-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+        }
+        
+        .reading-interface.night-mode .reading-menu {
+            background-color: #2a2a2a;
+            border-color: #444;
+        }
+        
+        .reading-settings {
+            min-width: 200px;
+        }
+        
+        .setting-group {
+            margin-bottom: 1rem;
+        }
+        
+        .setting-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .setting-group input[type="range"] {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -369,6 +536,74 @@
             <div style="margin-top: 1rem; text-align: right; gap: 0.5rem; display: flex; justify-content: flex-end;">
                 <button class="btn secondary" onclick="closeModal()">取消</button>
                 <button class="btn" onclick="confirmModal()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 阅读界面 -->
+    <div id="reading-interface" class="reading-interface" style="display: none;">
+        <div class="reading-header">
+            <button class="btn secondary" onclick="app.closeReader()">返回书架</button>
+            <div class="reading-title" id="reading-book-title">书名</div>
+            <button class="btn secondary" onclick="app.toggleReaderMenu()">菜单</button>
+        </div>
+        
+        <div class="reading-content">
+            <div class="reading-sidebar" id="reading-sidebar">
+                <h4>目录</h4>
+                <div class="search-box" style="margin-bottom: 1rem;">
+                    <input type="text" id="search-input" placeholder="搜索书籍内容..." style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                    <button onclick="app.performSearch()" style="width: 100%; margin-top: 0.5rem; padding: 0.5rem; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer;">搜索</button>
+                </div>
+                <div class="chapter-list" id="chapter-list">
+                    <!-- 章节列表 -->
+                </div>
+                <div class="search-results" id="search-results" style="display: none;">
+                    <!-- 搜索结果 -->
+                </div>
+            </div>
+            
+            <div class="reading-main">
+                <div class="reading-area" id="reading-area">
+                    <div class="chapter-title" id="chapter-title">章节标题</div>
+                    <div class="chapter-content" id="chapter-content">
+                        <!-- 章节内容 -->
+                    </div>
+                </div>
+                
+                <div class="reading-controls">
+                    <button class="btn secondary" onclick="app.prevChapter()" id="prev-chapter">上一章</button>
+                    <div class="reading-progress">
+                        <span id="current-chapter">1</span> / <span id="total-chapters">1</span>
+                    </div>
+                    <button class="btn secondary" onclick="app.nextChapter()" id="next-chapter">下一章</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="reading-menu" id="reading-menu" style="display: none;">
+            <div class="reading-settings">
+                <h4>阅读设置</h4>
+                <div class="setting-group">
+                    <label>字体大小: <span id="reader-font-size-value">16px</span></label>
+                    <input type="range" id="reader-font-size" min="12" max="32" value="16">
+                </div>
+                <div class="setting-group">
+                    <label>行间距: <span id="reader-line-spacing-value">1.6</span></label>
+                    <input type="range" id="reader-line-spacing" min="1.2" max="3.0" step="0.1" value="1.6">
+                </div>
+                <div class="setting-group">
+                    <label>页面边距: <span id="reader-margin-value">20px</span></label>
+                    <input type="range" id="reader-margin" min="10" max="60" value="20">
+                </div>
+                <div class="setting-group">
+                    <label>
+                        <input type="checkbox" id="reader-night-mode"> 夜间模式
+                    </label>
+                </div>
+                <div class="setting-group">
+                    <button class="btn" onclick="app.toggleReaderMenu()">关闭菜单</button>
+                </div>
             </div>
         </div>
     </div>
