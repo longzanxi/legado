@@ -8,6 +8,7 @@
     "dev": "electron . --dev",
     "build": "electron-builder",
     "build:win": "electron-builder --win",
+    "build:win:portable": "electron-builder --win --config.win.target=portable",
     "pack": "electron-builder --dir",
     "dist": "npm run build:win",
     "postinstall": "electron-builder install-app-deps"
@@ -58,7 +59,16 @@
       "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
     ],
     "win": {
-      "target": "nsis",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
       "icon": "assets/icon.ico",
       "requestedExecutionLevel": "asInvoker"
     },

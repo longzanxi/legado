@@ -54,16 +54,29 @@
 
 ### 生产版本
 
-1. **下载安装包**
-   - 从 [Releases](https://github.com/longzanxi/legado/releases) 页面下载最新版本的Windows安装包
+1. **下载可执行文件**
+   - 从 [Releases](https://github.com/longzanxi/legado/releases) 页面下载最新版本的Windows可执行文件
+   - 下载文件名格式: `legado-vX.Y.Z.exe` (如 `legado-v3.24.081407.exe`)
+   - 同时下载 `checksums.sha256` 文件用于验证文件完整性
 
-2. **安装应用**
-   - 运行下载的`.exe`文件
-   - 按照安装向导完成安装
+2. **验证文件完整性（推荐）**
+   ```cmd
+   certutil -hashfile legado-vX.Y.Z.exe SHA256
+   ```
+   对比输出的SHA256值与 `checksums.sha256` 文件中的值是否一致
 
-3. **首次使用**
+3. **运行应用**
+   - 直接双击运行下载的`.exe`文件（无需安装）
+   - 首次运行时Windows可能显示安全警告，点击"更多信息" → "仍要运行"
+   - 首次启动可能需要几秒钟初始化
+
+4. **首次使用**
    - 启动应用后，点击"导入本地书籍"添加您的电子书
    - 在书源页面添加或导入书源文件
+
+5. **系统要求**
+   - Windows 10/11 (64位)
+   - 无需额外运行时环境（自包含应用）
 
 ## 使用指南
 
