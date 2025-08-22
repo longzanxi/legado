@@ -1,0 +1,13 @@
+// Placeholder icon - in a real application, this would be a proper .ico file
+// For now, this is just a placeholder text file
+ICON PLACEHOLDER
+
+In a production build, you would need:
+1. icon.ico - Windows icon file (256x256, 48x48, 32x32, 16x16 sizes)
+2. icon.png - PNG version for display
+3. icon.icns - macOS icon (if supporting macOS later)
+
+You can convert the original Android app icon using online converters or tools like:
+- ImageMagick
+- GIMP
+- Online ICO converters

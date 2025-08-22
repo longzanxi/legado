@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legado - 阅读3.0 (Windows版)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background-color: #1976d2;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav button {
+            background: none;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .nav button:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .nav button.active {
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .book-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        .book-cover {
+            width: 100%;
+            height: 120px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #666;
+        }
+        
+        .book-title {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .book-author {
+            color: #666;
+            font-size: 0.9rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .actions {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            background-color: #1976d2;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: #1565c0;
+        }
+        
+        .btn.secondary {
+            background-color: #666;
+        }
+        
+        .btn.secondary:hover {
+            background-color: #555;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .empty {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+        }
+        
+        .source-list {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .source-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .source-item:last-child {
+            border-bottom: none;
+        }
+        
+        .source-info {
+            flex: 1;
+        }
+        
+        .source-name {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        
+        .source-url {
+            color: #666;
+            font-size: 0.9rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .source-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #4caf50;
+        }
+        
+        .status-indicator.disabled {
+            background-color: #f44336;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4caf50;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.error {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">📚 Legado - 阅读3.0</div>
+        <nav class="nav">
+            <button onclick="showTab('bookshelf')" class="tab-btn active" id="bookshelf-btn">书架</button>
+            <button onclick="showTab('sources')" class="tab-btn" id="sources-btn">书源</button>
+            <button onclick="showTab('settings')" class="tab-btn" id="settings-btn">设置</button>
+        </nav>
+    </div>
+
+    <div class="container">
+        <!-- 书架标签页 -->
+        <div id="bookshelf" class="tab-content active">
+            <div class="actions">
+                <button class="btn" onclick="importBooks()">📁 导入本地书籍</button>
+                <button class="btn secondary" onclick="refreshBooks()">🔄 刷新书架</button>
+            </div>
+            <div id="books-loading" class="loading">正在加载书籍...</div>
+            <div id="books-empty" class="empty" style="display: none;">
+                <h3>书架空空如也</h3>
+                <p>点击"导入本地书籍"开始添加您的第一本书</p>
+            </div>
+            <div class="book-grid" id="book-grid"></div>
+        </div>
+
+        <!-- 书源标签页 -->
+        <div id="sources" class="tab-content">
+            <div class="actions">
+                <button class="btn" onclick="importSources()">📥 导入书源</button>
+                <button class="btn" onclick="addSource()">➕ 添加书源</button>
+                <button class="btn secondary" onclick="refreshSources()">🔄 刷新书源</button>
+            </div>
+            <div id="sources-loading" class="loading">正在加载书源...</div>
+            <div id="sources-empty" class="empty" style="display: none;">
+                <h3>暂无书源</h3>
+                <p>点击"导入书源"或"添加书源"开始添加书源</p>
+            </div>
+            <div class="source-list" id="source-list"></div>
+        </div>
+
+        <!-- 设置标签页 -->
+        <div id="settings" class="tab-content">
+            <div class="actions">
+                <button class="btn" onclick="saveSettings()">💾 保存设置</button>
+                <button class="btn secondary" onclick="resetSettings()">🔄 重置设置</button>
+            </div>
+            <div style="background: white; border-radius: 8px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div class="form-group">
+                    <label>阅读字体大小</label>
+                    <input type="range" id="fontSize" min="12" max="30" value="18">
+                    <span id="fontSizeValue">18px</span>
+                </div>
+                <div class="form-group">
+                    <label>行间距</label>
+                    <input type="range" id="lineSpacing" min="0" max="20" value="8">
+                    <span id="lineSpacingValue">8px</span>
+                </div>
+                <div class="form-group">
+                    <label>页面边距</label>
+                    <input type="range" id="pageMargin" min="10" max="50" value="24">
+                    <span id="pageMarginValue">24px</span>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="nightMode"> 夜间模式
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="autoBackup"> 自动备份
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-title">标题</h3>
+            <div id="modal-body"></div>
+            <div style="margin-top: 1rem; text-align: right; gap: 0.5rem; display: flex; justify-content: flex-end;">
+                <button class="btn secondary" onclick="closeModal()">取消</button>
+                <button class="btn" onclick="confirmModal()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 消息提示 -->
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
