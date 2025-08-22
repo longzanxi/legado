@@ -16,3 +16,11 @@ package-lock.json
 .idea/
 # Kotlin 2.0
 .kotlin/
+
+# Windows app build artifacts
+windows-app/dist/
+windows-app/node_modules/
+windows-app/*.log
+windows-app/.electron-builder.env
+dist/
+scripts/dist/

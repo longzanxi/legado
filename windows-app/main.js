@@ -10,6 +10,29 @@ const SourceService = require('./backend/services/source-service');
 const ConfigService = require('./backend/services/config-service');
 const WebService = require('./backend/services/web-service');
 
+// Handle command line arguments
+const args = process.argv.slice(2);
+if (args.includes('--version')) {
+  const packageJson = require('./package.json');
+  console.log(`Legado Windows v${packageJson.version}`);
+  process.exit(0);
+}
+
+if (args.includes('-h') || args.includes('--help')) {
+  const packageJson = require('./package.json');
+  console.log(`Legado Windows v${packageJson.version}`);
+  console.log('');
+  console.log('Usage: legado [options]');
+  console.log('');
+  console.log('Options:');
+  console.log('  --version    Show version number');
+  console.log('  -h, --help   Show help');
+  console.log('  --dev        Run in development mode');
+  console.log('');
+  console.log('Legado is an e-book reader for Windows.');
+  process.exit(0);
+}
+
 class LegadoApp {
   constructor() {
     this.mainWindow = null;
